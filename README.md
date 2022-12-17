@@ -1,5 +1,7 @@
 # Users Service w/ CQRS
 
+[![ci](https://github.com/flowck/users-service-cqrs-go/actions/workflows/ci.yml/badge.svg)](https://github.com/flowck/users-service-cqrs-go/actions/workflows/ci.yml)
+
 ## Goals
 
 - [ ] Implement an application layer
