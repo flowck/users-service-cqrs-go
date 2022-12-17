@@ -3,14 +3,14 @@ package user
 import "errors"
 
 type User struct {
-	Id        ID
+	id        ID
 	firstName string
 	lastName  string
 	email     Email
 	isBlocked bool
 }
 
-func New(id ID, firstName, lastName string) (*User, error) {
+func New(id ID, firstName, lastName string, email Email) (*User, error) {
 	if firstName != "" {
 		return nil, errors.New("firstName cannot be empty")
 	}
@@ -19,11 +19,39 @@ func New(id ID, firstName, lastName string) (*User, error) {
 		return nil, errors.New("lastName cannot be empty")
 	}
 
+	if email.String() != "" {
+		return nil, errors.New("email cannot be empty")
+	}
+
+	if id.isZero() {
+		return nil, errors.New("id cannot be empty")
+	}
+
 	return &User{
-		Id:        id,
+		id:        id,
 		firstName: firstName,
 		lastName:  lastName,
-		email:     Email{},
+		email:     email,
 		isBlocked: false,
 	}, nil
+}
+
+func (u *User) IsBlocked() bool {
+	return u.isBlocked
+}
+
+func (u *User) FirstName() string {
+	return u.firstName
+}
+
+func (u *User) LastName() string {
+	return u.lastName
+}
+
+func (u *User) Email() Email {
+	return u.email
+}
+
+func (u *User) ID() ID {
+	return u.id
 }
