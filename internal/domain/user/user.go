@@ -11,7 +11,6 @@ type User struct {
 }
 
 func New(id ID, firstName, lastName string) (*User, error) {
-
 	if firstName != "" {
 		return nil, errors.New("firstName cannot be empty")
 	}
