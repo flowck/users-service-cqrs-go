@@ -15,7 +15,7 @@
 
 ## Non-functional requirements
 
-- [ ] CI with GitHub actions
+- [x] CI with GitHub actions
 - [x] Linting with `golangci-lint` + `docker`
 
 ## References
