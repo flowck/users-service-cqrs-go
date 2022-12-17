@@ -2,9 +2,6 @@ package user
 
 import "errors"
 
-type ID struct{}
-type Email struct{}
-
 type User struct {
 	Id        ID
 	firstName string
@@ -14,6 +11,7 @@ type User struct {
 }
 
 func New(id ID, firstName, lastName string) (*User, error) {
+
 	if firstName != "" {
 		return nil, errors.New("firstName cannot be empty")
 	}
@@ -23,7 +21,7 @@ func New(id ID, firstName, lastName string) (*User, error) {
 	}
 
 	return &User{
-		Id:        ID{},
+		Id:        id,
 		firstName: firstName,
 		lastName:  lastName,
 		email:     Email{},
