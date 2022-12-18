@@ -18,11 +18,18 @@
 - [x] CI with GitHub actions
 - [x] Linting with `golangci-lint` + `docker`
 
-## Local setup requirements
+## Local setup
+
+### Required tools
 
 - Docker
 - [Task](https://taskfile.dev/)
 - [golangci-lint](https://golangci-lint.run/)
+
+### Miscellaneous
+
+- System's entry point `./cmd/main.go`
+- System's code `./internal`
 
 ## References
 
