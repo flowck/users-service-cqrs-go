@@ -18,7 +18,7 @@ jobs:
         run: task build
 
       - name: Unit Test
-          run: task test
+        run: task test
 
   golangci:
     name: lint
