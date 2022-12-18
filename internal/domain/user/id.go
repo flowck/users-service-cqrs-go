@@ -1,6 +1,9 @@
 package user
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"github.com/google/uuid"
+)
 
 type ID struct {
 	value uuid.UUID
@@ -10,13 +13,17 @@ func NewID() ID {
 	return ID{value: uuid.New()}
 }
 
-func NewIDFromString(value string) (ID, error) {
-	id, err := uuid.Parse(value)
-	if err != nil {
-		return ID{}, err
+func NewIDFromString(id string) (ID, error) {
+	if id == "" {
+		return ID{}, errors.New("id is empty")
 	}
 
-	return ID{value: id}, nil
+	newId, err := uuid.Parse(id)
+	if err != nil {
+		return ID{}, errors.New("the id is invalid")
+	}
+
+	return ID{value: newId}, nil
 }
 
 func (i *ID) isZero() bool {
