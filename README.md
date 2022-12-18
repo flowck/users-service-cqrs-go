@@ -18,6 +18,12 @@
 - [x] CI with GitHub actions
 - [x] Linting with `golangci-lint` + `docker`
 
+## Local setup requirements
+
+- Docker
+- [Task](https://taskfile.dev/)
+- [golangci-lint](https://golangci-lint.run/)
+
 ## References
 
 - [Introducing basic CQRS by refactoring a Go project](https://threedots.tech/post/basic-cqrs-in-go/) - Robert Laszczak (ThreeDots Labs)
