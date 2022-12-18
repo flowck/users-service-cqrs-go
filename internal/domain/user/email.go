@@ -13,7 +13,7 @@ func (e *Email) String() string {
 
 func NewEmail(value string) (Email, error) {
 	regex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	
+
 	if value == "" {
 		return Email{}, ErrEmailEmpty
 	}

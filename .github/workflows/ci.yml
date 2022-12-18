@@ -14,7 +14,12 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '~1.19'
-      - run: task build
+      - name: Build
+        run: task build
+
+      - name: Unit Test
+          run: task test
+
   golangci:
     name: lint
     runs-on: ubuntu-latest
