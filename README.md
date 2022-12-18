@@ -27,3 +27,4 @@
 ## References
 
 - [Introducing basic CQRS by refactoring a Go project](https://threedots.tech/post/basic-cqrs-in-go/) - Robert Laszczak (ThreeDots Labs)
+- [CQRS pattern/When to use CQRS pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs#when-to-use-cqrs-pattern)

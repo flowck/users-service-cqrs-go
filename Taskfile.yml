@@ -16,3 +16,12 @@ tasks:
   build:
     cmds:
       - go build -o bin/users_service_crqs ./cmd
+
+
+  docker:build:
+    cmds:
+      - docker build -t users_service_cqrs .
+
+  docker:run:
+    cmds:
+      - docker run users_service_cqrs --env-file=./.env
