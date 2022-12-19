@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"time"
 	"users-service-cqrs/internal/adapters"
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/app/command"
@@ -49,6 +51,19 @@ func main() {
 	}
 
 	fmt.Println(application.Queries.AllBlockedUser.Handle(ctx, query.AllBlockedUsers{}))
+
+	server := http.Server{
+		Addr:              fmt.Sprintf(":%s", os.Getenv("PORT")),
+		Handler:           nil,
+		ReadHeaderTimeout: time.Second * 2,
+		IdleTimeout:       time.Second * 2,
+		ReadTimeout:       time.Second * 2,
+		WriteTimeout:      time.Second * 2,
+	}
+
+	if err = server.ListenAndServe(); err != nil {
+		panic(err)
+	}
 }
 
 func applyPsqlMigrationsAndSeeds(db *sql.DB, seedsEnabled bool) {

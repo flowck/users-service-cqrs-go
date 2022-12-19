@@ -4,6 +4,7 @@ services:
   swagger_editor:
     image: swaggerapi/swagger-editor
     platform: linux/amd64
+    profiles: ["swagger_editor"]
     environment:
       - SWAGGER_FILE=/tmp/users_service.yaml
     ports:
@@ -19,12 +20,22 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - ./sql/docker/init.sql:/docker-entrypoint-initdb.d/create_database.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: ./
+    links:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      PORT: 3000
-    env_file:
-      - .env
+      PORT: 3001
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: postgres://postgres:password@postgres:5432/users_service_cqrs_db?sslmode=disable
     ports:
-      - "3000:3001"
+      - "127.0.0.1:3001:3000"

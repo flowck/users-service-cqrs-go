@@ -6,9 +6,6 @@ jobs:
   tests:
     name: tests
     runs-on: ubuntu-latest
-    env:
-      GOOSE_DRIVER: postgres
-      GOOSE_DBSTRING: postgres://postgres:password@postgres:5432/users_service_cqrs_db?sslmode=disable
     steps:
       - uses: actions/checkout@v2
       - uses: arduino/setup-task@v1
@@ -21,10 +18,17 @@ jobs:
       - name: Build
         run: task build
 
-      - name: Boot app
+      - name: Boot service
         run: docker-compose up -d
 
+      - name: Wait for service
+        timeout-minutes: 1
+        run: ./scripts/wait-for.sh
+
       - name: Unit Test
+        env:
+          GOOSE_DRIVER: postgres
+          GOOSE_DBSTRING: postgres://postgres:password@localhost:5432/users_service_cqrs_db?sslmode=disable
         run: task test
 
   golangci:
