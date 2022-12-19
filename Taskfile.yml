@@ -5,6 +5,13 @@ dotenv:
 
 tasks:
   #
+  # Run
+  #
+  run:
+    cmds:
+      - go run ./cmd
+
+  #
   # Lint
   #
   lint:

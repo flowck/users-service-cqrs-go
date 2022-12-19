@@ -3,12 +3,11 @@ package adapters_test
 import (
 	"context"
 	"database/sql"
-	"github.com/stretchr/testify/assert"
-	"users-service-cqrs/internal/adapters"
-
 	_ "github.com/lib/pq"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+	"users-service-cqrs/internal/adapters"
 )
 
 func TestPsqlReadUserRepo_FindAll(t *testing.T) {
