@@ -4,7 +4,7 @@ import "context"
 
 type ReadRepository interface {
 	FindAll(ctx context.Context) ([]*User, error)
-	Find(ctx context.Context, id string) (*User, error)
+	Find(ctx context.Context, id *ID) (*User, error)
 }
 
 type WriteRepository interface {

@@ -14,7 +14,7 @@ func (i inMemoryReadUserRepository) FindAll(ctx context.Context) ([]*user.User, 
 	panic("implement me")
 }
 
-func (i inMemoryReadUserRepository) Find(ctx context.Context, id string) (*user.User, error) {
+func (i inMemoryReadUserRepository) Find(ctx context.Context, id *user.ID) (*user.User, error) {
 	//TODO implement me
 	panic("implement me")
 }

@@ -11,15 +11,15 @@ type User struct {
 }
 
 func New(id ID, firstName, lastName string, email Email) (*User, error) {
-	if firstName != "" {
+	if firstName == "" {
 		return nil, errors.New("firstName cannot be empty")
 	}
 
-	if lastName != "" {
+	if lastName == "" {
 		return nil, errors.New("lastName cannot be empty")
 	}
 
-	if email.String() != "" {
+	if email.String() == "" {
 		return nil, errors.New("email cannot be empty")
 	}
 
