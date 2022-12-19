@@ -58,3 +58,12 @@ tasks:
           -package http \
           -generate server,types,spec \
           ./api/openapi/users_service.yaml > ./internal/ports/http/server.gen.go
+      - task oapi:generate:client
+
+  oapi:generate:client:
+    cmds:
+      - |
+        oapi-codegen \
+          -package client \
+          -generate client,types,spec \
+          ./api/openapi/users_service.yaml > ./tests/client/client.gen.go
