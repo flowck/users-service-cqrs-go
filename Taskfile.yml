@@ -56,7 +56,7 @@ tasks:
       - | 
         oapi-codegen \
           -package http \
-          -generate server,types,spec \
+          -generate chi-server,types,spec \
           ./api/openapi/users_service.yaml > ./internal/ports/http/server.gen.go
       - task oapi:generate:client
 
