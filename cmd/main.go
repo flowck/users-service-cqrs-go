@@ -4,14 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
-	"github.com/pressly/goose/v3"
 	"log"
 	"os"
 	"users-service-cqrs/internal/adapters"
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/app/command"
 	"users-service-cqrs/internal/app/query"
+
+	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 )
 
 func main() {

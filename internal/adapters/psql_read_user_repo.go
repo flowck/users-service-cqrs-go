@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"users-service-cqrs/internal/adapters/models"
 	"users-service-cqrs/internal/domain/user"
+
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type psqlReadUserRepo struct {
