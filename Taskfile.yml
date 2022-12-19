@@ -17,7 +17,9 @@ tasks:
     cmds:
       - go build -o bin/users_service_crqs ./cmd
 
-
+  #
+  # Docker
+  #
   docker:build:
     cmds:
       - docker build -t users_service_cqrs .
@@ -25,3 +27,18 @@ tasks:
   docker:run:
     cmds:
       - docker run users_service_cqrs --env-file=./.env
+
+  #
+  # gRPC
+  #
+
+  #
+  # OpenAPI
+  #
+  oapi:generate:
+    cmds:
+      - | 
+        oapi-codegen \
+          -package http \
+          -generate server,types,spec \
+          ./api/openapi/users_service.yaml > ./internal/ports/http/server.gen.go

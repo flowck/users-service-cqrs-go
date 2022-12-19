@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "users-service-cqrs/api";
+package api;
+
+service UsersService {
+  rpc BlockUser(Empty) returns (Empty);
+  rpc UnblockUser(Empty) returns (Empty);
+  rpc ShowBlockedUsers(Empty) returns (Empty);
+}
+
+message Empty {}

@@ -1,0 +1,135 @@
+openapi: 3.0.3
+info:
+  title: UsersService
+  description: |-
+    CQRS demo implementation of a service to manage users.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: firmino.changani@gmail.com
+  license:
+    name: MIT
+    url: https://github.com/flowck/users-service-cqrs-go/LICENSE.md
+  version: 0.0.1
+externalDocs:
+  description: https://github.com/flowck/users-service-cqrs-go/README.md
+  url: https://github.com/flowck/users-service-cqrs-go
+servers:
+  - url: http://localhost:3000
+paths:
+  /users/{id}/unblock:
+    post:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      tags:
+        - users
+      summary: Update an existing pet
+      description: Update an existing pet by Id
+      operationId: unblockUser
+      responses:
+        '200':
+          description: Successful operationS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+  /users/{id}/block:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags:
+        - users
+      summary: Finds Pets by status
+      description: Multiple status values can be provided with comma separated strings
+      operationId: blockUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+  /users:
+    get:
+      tags:
+        - users
+      summary: Finds Pets by tags
+      description: Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
+      operationId: findPetsByTags
+      parameters:
+        - name: status
+          in: query
+          description: User status "blocked" / "unblocked"
+          required: true
+          explode: true
+          schema:
+            type: string
+            example: blocked
+            enum:
+              - blocked
+              - unblocked
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserList'
+        '400':
+          description: Invalid tag value
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 776f3e5a-b5cc-4ee4-a081-a315e6e4a591
+        firstName:
+          type: string
+          example: theUser
+        lastName:
+          type: string
+          example: John
+        email:
+          type: string
+          example: john@email.com
+          format: email
+        status:
+          type: string
+          description: User Status
+          example: blocked
+    UserList:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    GenericResponse:
+      type: object
+      properties:
+        message:
+          type: string
+

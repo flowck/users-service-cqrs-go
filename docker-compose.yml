@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  swagger_editor:
+    image: swaggerapi/swagger-editor
+    platform: linux/amd64
+    environment:
+      - SWAGGER_FILE=/tmp/users_service.yaml
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api/openapi:/tmp
