@@ -30,6 +30,8 @@
 
 - System's entry point `./cmd/main.go`
 - System's code `./internal`
+- Inspect the file [Taskfile.yml](./Taskfile.yml) to learn about the scripts used to support the development of this project
+
 
 ## References
 

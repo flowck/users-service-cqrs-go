@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  #
+  # Lint
+  #
   lint:
     cmds:
       - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.50.1 golangci-lint run -v
@@ -9,10 +12,16 @@ tasks:
     cmds:
       - golangci-lint run --fix
 
+  #
+  # Test
+  #
   test:
     cmds:
       - go test ./internal/...
 
+  #
+  # Build
+  #
   build:
     cmds:
       - go build -o bin/users_service_crqs ./cmd
@@ -31,6 +40,13 @@ tasks:
   #
   # gRPC
   #
+  grpc:generate:
+    cmds:
+      - |
+        protoc --proto_path=./api/proto \
+          --go_opt=paths=source_relative --go_out=./internal/ports/grpc \
+          --go-grpc_opt=paths=source_relative --go-grpc_out=./internal/ports/grpc \
+          ./api/proto/*.proto
 
   #
   # OpenAPI
