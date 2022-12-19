@@ -10,3 +10,12 @@ services:
       - "8080:8080"
     volumes:
       - ./api/openapi:/tmp
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./sql/docker/init.sql:/docker-entrypoint-initdb.d/create_database.sql

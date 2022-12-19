@@ -26,12 +26,26 @@
 - [Task](https://taskfile.dev/)
 - [golangci-lint](https://golangci-lint.run/)
 
+### Automated-setup
+
+PS: It's still experimental, there for it might result in an error due to a race condition between the database boot and the migrations. A wait-for-like script should do the trick.
+
+- `task local-setup` will
+  - Start the services defined in [docker-compose.yml](./docker-compose.yml)
+  - Apply database migrations
+  - Apply seed data
+
 ### Miscellaneous
 
 - System's entry point `./cmd/main.go`
 - System's code `./internal`
 - Inspect the file [Taskfile.yml](./Taskfile.yml) to learn about the scripts used to support the development of this project
 
+### Migrations and seeds
+
+- Generate a new migration: `task mig:generate -- drop-column-status`
+- Generate a new seed: `task seeds:generate -- add-more-users`
+- More scripts available at [Taskfile](./Taskfile.yml)
 
 ## References
 

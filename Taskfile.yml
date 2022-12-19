@@ -1,5 +1,8 @@
 version: '3'
 
+dotenv:
+  - ./.env
+
 tasks:
   #
   # Lint
@@ -67,3 +70,48 @@ tasks:
           -package client \
           -generate client,types,spec \
           ./api/openapi/users_service.yaml > ./tests/client/client.gen.go
+        
+
+  #
+  # ORM
+  #
+
+  #
+  # Migrations
+  #
+  mig:up:
+    cmds:
+      - goose -no-versioning -dir ./sql/migrations up
+
+  mig:down:
+    cmds:
+      - goose -no-versioning -dir ./sql/migrations down
+
+  mig:generate:
+    cmds:
+      - goose -s -dir ./sql/migrations create {{.CLI_ARGS}} sql
+
+  #
+  # Seeds
+  #
+  seeds:up:
+    cmds:
+      - goose -dir ./sql/seeds up
+
+  seeds:down:
+    cmds:
+      - goose -dir ./sql/seeds down
+
+  seeds:generate:
+    cmds:
+      - goose -dir ./sql/seeds create {{.CLI_ARGS}} sql
+
+
+  #
+  # Local setup
+  #
+  local-setup:
+    cmds:
+      - docker-compose up -d
+      - task mig:up
+      - task seeds:up
