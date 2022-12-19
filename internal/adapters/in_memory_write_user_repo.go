@@ -6,7 +6,7 @@ import (
 )
 
 type inMemoryWriteUserRepository struct {
-	data map[string]*user.User
+	// data map[string]*user.User
 }
 
 func (i inMemoryWriteUserRepository) Update(ctx context.Context, u *user.User) error {
