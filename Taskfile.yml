@@ -11,6 +11,10 @@ tasks:
     cmds:
       - go run ./cmd
 
+  run:dev:
+    cmds:
+      - reflex -r '\.go' -s -- sh -c 'go run ./cmd'
+
   #
   # Lint
   #
@@ -120,7 +124,6 @@ tasks:
     cmds:
       - goose -dir ./sql/seeds create {{.CLI_ARGS}} sql
 
-
   #
   # Local setup
   #
@@ -129,3 +132,7 @@ tasks:
       - docker-compose up -d
       - task mig:up
       - task seeds:up
+
+  ci:boot:
+    cmds:
+      - docker-compose --profile app up -d

@@ -25,6 +25,7 @@
 - Docker
 - [Task](https://taskfile.dev/)
 - [golangci-lint](https://golangci-lint.run/)
+- [Reflex](https://github.com/cespare/reflex)
 
 ### Automated-setup
 
