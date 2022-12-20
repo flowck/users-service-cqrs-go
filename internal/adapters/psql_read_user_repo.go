@@ -31,7 +31,7 @@ func (p psqlReadUserRepo) Find(ctx context.Context, id *user.ID) (*query.User, e
 	row, err := models.FindUser(ctx, p.db, id.String())
 
 	if errors.Is(err, sql.ErrNoRows) {
-		return nil, query.ErrUserNotFound
+		return nil, user.ErrUserNotFound
 	}
 
 	if err != nil {

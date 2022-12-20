@@ -8,5 +8,5 @@ type ReadRepository interface {
 }
 
 type WriteRepository interface {
-	Update(ctx context.Context, u *User) error
+	Update(ctx context.Context, id *ID, updateFn func(*User) *User) error
 }

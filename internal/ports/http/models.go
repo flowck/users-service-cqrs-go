@@ -59,3 +59,10 @@ func reply(w http.ResponseWriter, r *http.Request, payload render.Renderer) {
 		render.Respond(w, r, NewErrorResponse(err, "Something unexpected happened", http.StatusInternalServerError))
 	}
 }
+
+func NewGenericResponse(msg string, status int) *GenericResponse {
+	return &GenericResponse{
+		Message: &msg,
+		Status:  &status,
+	}
+}

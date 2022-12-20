@@ -7,7 +7,7 @@ import (
 )
 
 type BlockUser struct {
-	UserId string
+	UserId *user.ID
 }
 
 type BlockUserHandler = cqrs.CommandHandler[BlockUser]
@@ -25,5 +25,8 @@ func NewBlockUserHandler(repo user.WriteRepository) *blockUserHandler {
 }
 
 func (h *blockUserHandler) Handle(ctx context.Context, cmd BlockUser) error {
-	return nil
+	return h.repo.Update(ctx, cmd.UserId, func(u *user.User) *user.User {
+		u.Block()
+		return u
+	})
 }

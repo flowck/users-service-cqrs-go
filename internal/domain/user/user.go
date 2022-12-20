@@ -1,6 +1,9 @@
 package user
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type User struct {
 	id        ID
@@ -48,10 +51,21 @@ func (u *User) LastName() string {
 	return u.lastName
 }
 
-func (u *User) Email() Email {
-	return u.email
+func (u *User) Email() *Email {
+	return &u.email
 }
 
 func (u *User) ID() ID {
 	return u.id
 }
+
+func (u *User) Block() {
+	fmt.Println(u)
+	u.isBlocked = true
+}
+
+func (u *User) UnBlock() {
+	u.isBlocked = false
+}
+
+var ErrUserNotFound = errors.New("user not found")

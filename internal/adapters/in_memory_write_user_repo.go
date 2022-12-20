@@ -9,7 +9,9 @@ type inMemoryWriteUserRepository struct {
 	// data map[string]*user.User
 }
 
-func (i inMemoryWriteUserRepository) Update(ctx context.Context, u *user.User) error {
+var _ user.WriteRepository = (*inMemoryWriteUserRepository)(nil)
+
+func (i inMemoryWriteUserRepository) Update(ctx context.Context, id *user.ID, updateFn func(u *user.User) *user.User) error {
 	//TODO implement me
 	panic("implement me")
 }

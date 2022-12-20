@@ -48,15 +48,15 @@ func main() {
 	// Data Repositories
 	//
 	readUserRepo := adapters.NewPsqlReadUserRepo(db)
-	inMemWriteUserRepo := adapters.NewInMemoryWriteUserRepository()
+	writeUserRepo := adapters.NewPsqlWriteUserRepo(db)
 
 	//
 	// Assemble the application
 	//
 	application := &app.App{
 		Commands: &app.Commands{
-			BlockUser:   command.NewBlockUserHandler(inMemWriteUserRepo),
-			UnBlockUser: command.NewUnblockUserHandler(inMemWriteUserRepo),
+			BlockUser:   command.NewBlockUserHandler(writeUserRepo),
+			UnBlockUser: command.NewUnblockUserHandler(writeUserRepo),
 		},
 		Queries: &app.Queries{
 			AllUsers: query.NewAllBlockedUsersHandler(readUserRepo),
