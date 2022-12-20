@@ -28,6 +28,7 @@ services:
 
   app:
     build: ./
+    profiles: ["app"]
     links:
       - postgres
     depends_on:

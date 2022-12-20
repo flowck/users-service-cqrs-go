@@ -19,7 +19,7 @@ jobs:
         run: task build
 
       - name: Boot service
-        run: docker-compose up -d
+        run: task ci:boot
 
       - name: Wait for service
         timeout-minutes: 1
