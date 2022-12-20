@@ -58,7 +58,7 @@ func main() {
 			UnBlockUser: command.NewUnblockUserHandler(inMemWriteUserRepo),
 		},
 		Queries: &app.Queries{
-			AllBlockedUser: query.NewAllBlockedUsersHandler(readUserRepo),
+			AllUsers: query.NewAllBlockedUsersHandler(readUserRepo),
 		},
 	}
 

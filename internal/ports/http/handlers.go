@@ -19,8 +19,7 @@ func NewHandlers(application *app.App) *Handlers {
 var _ ServerInterface = (*Handlers)(nil)
 
 func (h *Handlers) BlockUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
-	//TODO implement me
-	panic("implement me")
+	panic("")
 }
 
 func (h *Handlers) UnblockUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
@@ -29,7 +28,7 @@ func (h *Handlers) UnblockUser(w http.ResponseWriter, r *http.Request, id openap
 }
 
 func (h *Handlers) GetUsersByStatus(w http.ResponseWriter, r *http.Request, params GetUsersByStatusParams) {
-	users, err := h.application.Queries.AllBlockedUser.Handle(r.Context(), query.AllUsers{Status: string(params.Status)})
+	users, err := h.application.Queries.AllUsers.Handle(r.Context(), query.AllUsers{Status: string(params.Status)})
 	if err != nil {
 		return
 	}
