@@ -12,7 +12,7 @@ type App struct {
 
 type Queries struct {
 	AllUsers query.AllUsersHandler
-	OneUser  query.AllUsersHandler
+	OneUser  query.OneUserHandler
 }
 
 type Commands struct {

@@ -3,6 +3,7 @@ package adapters
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"users-service-cqrs/internal/adapters/models"
 	"users-service-cqrs/internal/app/query"
 	"users-service-cqrs/internal/domain/user"
@@ -28,6 +29,11 @@ func (p psqlReadUserRepo) FindAll(ctx context.Context, q query.AllUsers) ([]*que
 
 func (p psqlReadUserRepo) Find(ctx context.Context, id *user.ID) (*query.User, error) {
 	row, err := models.FindUser(ctx, p.db, id.String())
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, query.ErrUserNotFound
+	}
+
 	if err != nil {
 		return nil, err
 	}

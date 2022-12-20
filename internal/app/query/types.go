@@ -2,6 +2,7 @@ package query
 
 import (
 	"context"
+	"errors"
 	"users-service-cqrs/internal/domain/user"
 )
 
@@ -13,6 +14,8 @@ type ReadRepository interface {
 	FindAll(ctx context.Context, q AllUsers) ([]*User, error)
 	Find(ctx context.Context, id *user.ID) (*User, error)
 }
+
+var ErrUserNotFound = errors.New("user not found")
 
 type User struct {
 	Id        string

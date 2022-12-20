@@ -1,11 +1,14 @@
 package http
 
 import (
-	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
-	"github.com/go-chi/render"
+	"errors"
 	"net/http"
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/app/query"
+	"users-service-cqrs/internal/domain/user"
+
+	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
+	"github.com/go-chi/render"
 )
 
 type Handlers struct {
@@ -18,13 +21,34 @@ func NewHandlers(application *app.App) *Handlers {
 
 var _ ServerInterface = (*Handlers)(nil)
 
+func (h *Handlers) GetOneUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
+	userId, err := user.NewIDFromString(id.String())
+	if err != nil {
+		reply(w, r, NewErrorResponse(err, err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	u, err := h.application.Queries.OneUser.Handle(r.Context(), &userId)
+
+	if errors.Is(err, query.ErrUserNotFound) {
+		reply(w, r, NewErrorResponse(err, err.Error(), http.StatusNotFound))
+		return
+	}
+
+	if err != nil {
+		reply(w, r, NewErrorResponse(err, "An error occurred", http.StatusInternalServerError))
+		return
+	}
+
+	render.Respond(w, r, UserResponse(u))
+}
+
 func (h *Handlers) BlockUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
 	panic("")
 }
 
 func (h *Handlers) UnblockUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID) {
-	//TODO implement me
-	panic("implement me")
+	panic("")
 }
 
 func (h *Handlers) GetUsersByStatus(w http.ResponseWriter, r *http.Request, params GetUsersByStatusParams) {

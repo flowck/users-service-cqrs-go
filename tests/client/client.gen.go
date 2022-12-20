@@ -30,6 +30,7 @@ const (
 // GenericResponse defines model for GenericResponse.
 type GenericResponse struct {
 	Message *string `json:"message,omitempty"`
+	Status  *int    `json:"status,omitempty"`
 }
 
 // User defines model for User.
@@ -131,6 +132,9 @@ type ClientInterface interface {
 	// GetUsersByStatus request
 	GetUsersByStatus(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetOneUser request
+	GetOneUser(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// BlockUser request
 	BlockUser(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -140,6 +144,18 @@ type ClientInterface interface {
 
 func (c *Client) GetUsersByStatus(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetUsersByStatusRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetOneUser(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetOneUserRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -208,6 +224,40 @@ func NewGetUsersByStatusRequest(server string, params *GetUsersByStatusParams) (
 	}
 
 	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetOneUserRequest generates requests for GetOneUser
+func NewGetOneUserRequest(server string, id openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/users/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
@@ -331,6 +381,9 @@ type ClientWithResponsesInterface interface {
 	// GetUsersByStatus request
 	GetUsersByStatusWithResponse(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*GetUsersByStatusResponse, error)
 
+	// GetOneUser request
+	GetOneUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetOneUserResponse, error)
+
 	// BlockUser request
 	BlockUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*BlockUserResponse, error)
 
@@ -354,6 +407,30 @@ func (r GetUsersByStatusResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetUsersByStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetOneUserResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *User
+	JSON400      *GenericResponse
+	JSON404      *GenericResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetOneUserResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetOneUserResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -414,6 +491,15 @@ func (c *ClientWithResponses) GetUsersByStatusWithResponse(ctx context.Context, 
 	return ParseGetUsersByStatusResponse(rsp)
 }
 
+// GetOneUserWithResponse request returning *GetOneUserResponse
+func (c *ClientWithResponses) GetOneUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetOneUserResponse, error) {
+	rsp, err := c.GetOneUser(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetOneUserResponse(rsp)
+}
+
 // BlockUserWithResponse request returning *BlockUserResponse
 func (c *ClientWithResponses) BlockUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*BlockUserResponse, error) {
 	rsp, err := c.BlockUser(ctx, id, reqEditors...)
@@ -452,6 +538,46 @@ func ParseGetUsersByStatusResponse(rsp *http.Response) (*GetUsersByStatusRespons
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetOneUserResponse parses an HTTP response from a GetOneUserWithResponse call
+func ParseGetOneUserResponse(rsp *http.Response) (*GetOneUserResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetOneUserResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest GenericResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest GenericResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	}
 
@@ -520,22 +646,23 @@ func ParseUnblockUserResponse(rsp *http.Response) (*UnblockUserResponse, error) 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

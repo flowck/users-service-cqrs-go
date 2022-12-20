@@ -3,15 +3,16 @@ package http
 import (
 	"context"
 	"fmt"
-	oapi "github.com/deepmap/oapi-codegen/pkg/chi-middleware"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net"
 	netHttp "net/http"
 	"time"
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/common/server"
+
+	oapi "github.com/deepmap/oapi-codegen/pkg/chi-middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 type HTTPServer struct {
@@ -65,6 +66,7 @@ func initMiddlewares(router *chi.Mux) {
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(server.ContentTypeMiddleware("application/json"))
 
 	swagger, err := GetSwagger()
 	if err != nil {
@@ -79,7 +81,8 @@ func initMiddlewares(router *chi.Mux) {
 		ErrorHandler: func(w netHttp.ResponseWriter, message string, statusCode int) {
 			w.WriteHeader(statusCode)
 			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, message)))
+			_, err = w.Write([]byte(fmt.Sprintf(`{"message": "%s"}`, message)))
+			log.Println(err)
 		},
 	}))
 }

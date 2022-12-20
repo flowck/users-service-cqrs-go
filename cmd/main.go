@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/kelseyhightower/envconfig"
 	"log"
 	"os"
 	"os/signal"
@@ -15,6 +14,8 @@ import (
 	"users-service-cqrs/internal/app/command"
 	"users-service-cqrs/internal/app/query"
 	"users-service-cqrs/internal/ports/http"
+
+	"github.com/kelseyhightower/envconfig"
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
@@ -30,7 +31,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	done := make(chan os.Signal)
+	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGTERM, syscall.SIGINT)
 
 	//
@@ -59,6 +60,7 @@ func main() {
 		},
 		Queries: &app.Queries{
 			AllUsers: query.NewAllBlockedUsersHandler(readUserRepo),
+			OneUser:  query.NewOneUserHandler(readUserRepo),
 		},
 	}
 
