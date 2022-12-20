@@ -21,10 +21,10 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
-// Defines values for FindPetsByTagsParamsStatus.
+// Defines values for GetUsersByStatusParamsStatus.
 const (
-	Blocked   FindPetsByTagsParamsStatus = "blocked"
-	Unblocked FindPetsByTagsParamsStatus = "unblocked"
+	Blocked   GetUsersByStatusParamsStatus = "blocked"
+	Unblocked GetUsersByStatusParamsStatus = "unblocked"
 )
 
 // GenericResponse defines model for GenericResponse.
@@ -46,14 +46,14 @@ type User struct {
 // UserList defines model for UserList.
 type UserList = []User
 
-// FindPetsByTagsParams defines parameters for FindPetsByTags.
-type FindPetsByTagsParams struct {
+// GetUsersByStatusParams defines parameters for GetUsersByStatus.
+type GetUsersByStatusParams struct {
 	// Status User status "blocked" / "unblocked"
-	Status FindPetsByTagsParamsStatus `form:"status" json:"status"`
+	Status GetUsersByStatusParamsStatus `form:"status" json:"status"`
 }
 
-// FindPetsByTagsParamsStatus defines parameters for FindPetsByTags.
-type FindPetsByTagsParamsStatus string
+// GetUsersByStatusParamsStatus defines parameters for GetUsersByStatus.
+type GetUsersByStatusParamsStatus string
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -128,8 +128,8 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// FindPetsByTags request
-	FindPetsByTags(ctx context.Context, params *FindPetsByTagsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetUsersByStatus request
+	GetUsersByStatus(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BlockUser request
 	BlockUser(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -138,8 +138,8 @@ type ClientInterface interface {
 	UnblockUser(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) FindPetsByTags(ctx context.Context, params *FindPetsByTagsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewFindPetsByTagsRequest(c.Server, params)
+func (c *Client) GetUsersByStatus(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetUsersByStatusRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -174,8 +174,8 @@ func (c *Client) UnblockUser(ctx context.Context, id openapi_types.UUID, reqEdit
 	return c.Client.Do(req)
 }
 
-// NewFindPetsByTagsRequest generates requests for FindPetsByTags
-func NewFindPetsByTagsRequest(server string, params *FindPetsByTagsParams) (*http.Request, error) {
+// NewGetUsersByStatusRequest generates requests for GetUsersByStatus
+func NewGetUsersByStatusRequest(server string, params *GetUsersByStatusParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -328,8 +328,8 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// FindPetsByTags request
-	FindPetsByTagsWithResponse(ctx context.Context, params *FindPetsByTagsParams, reqEditors ...RequestEditorFn) (*FindPetsByTagsResponse, error)
+	// GetUsersByStatus request
+	GetUsersByStatusWithResponse(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*GetUsersByStatusResponse, error)
 
 	// BlockUser request
 	BlockUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*BlockUserResponse, error)
@@ -338,14 +338,14 @@ type ClientWithResponsesInterface interface {
 	UnblockUserWithResponse(ctx context.Context, id openapi_types.UUID, reqEditors ...RequestEditorFn) (*UnblockUserResponse, error)
 }
 
-type FindPetsByTagsResponse struct {
+type GetUsersByStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]UserList
 }
 
 // Status returns HTTPResponse.Status
-func (r FindPetsByTagsResponse) Status() string {
+func (r GetUsersByStatusResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -353,7 +353,7 @@ func (r FindPetsByTagsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r FindPetsByTagsResponse) StatusCode() int {
+func (r GetUsersByStatusResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -405,13 +405,13 @@ func (r UnblockUserResponse) StatusCode() int {
 	return 0
 }
 
-// FindPetsByTagsWithResponse request returning *FindPetsByTagsResponse
-func (c *ClientWithResponses) FindPetsByTagsWithResponse(ctx context.Context, params *FindPetsByTagsParams, reqEditors ...RequestEditorFn) (*FindPetsByTagsResponse, error) {
-	rsp, err := c.FindPetsByTags(ctx, params, reqEditors...)
+// GetUsersByStatusWithResponse request returning *GetUsersByStatusResponse
+func (c *ClientWithResponses) GetUsersByStatusWithResponse(ctx context.Context, params *GetUsersByStatusParams, reqEditors ...RequestEditorFn) (*GetUsersByStatusResponse, error) {
+	rsp, err := c.GetUsersByStatus(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseFindPetsByTagsResponse(rsp)
+	return ParseGetUsersByStatusResponse(rsp)
 }
 
 // BlockUserWithResponse request returning *BlockUserResponse
@@ -432,15 +432,15 @@ func (c *ClientWithResponses) UnblockUserWithResponse(ctx context.Context, id op
 	return ParseUnblockUserResponse(rsp)
 }
 
-// ParseFindPetsByTagsResponse parses an HTTP response from a FindPetsByTagsWithResponse call
-func ParseFindPetsByTagsResponse(rsp *http.Response) (*FindPetsByTagsResponse, error) {
+// ParseGetUsersByStatusResponse parses an HTTP response from a GetUsersByStatusWithResponse call
+func ParseGetUsersByStatusResponse(rsp *http.Response) (*GetUsersByStatusResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &FindPetsByTagsResponse{
+	response := &GetUsersByStatusResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -520,22 +520,22 @@ func ParseUnblockUserResponse(rsp *http.Response) (*UnblockUserResponse, error) 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -11,7 +11,7 @@ type App struct {
 }
 
 type Queries struct {
-	AllBlockedUser query.AllBlockedUsersHandler
+	AllBlockedUser query.AllUsersHandler
 }
 
 type Commands struct {

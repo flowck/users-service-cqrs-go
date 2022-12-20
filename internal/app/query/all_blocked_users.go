@@ -3,25 +3,26 @@ package query
 import (
 	"context"
 	"users-service-cqrs/internal/common/cqrs"
-	"users-service-cqrs/internal/domain/user"
 )
 
-type AllBlockedUsers struct{}
-
-type AllBlockedUsersHandler = cqrs.Query[AllBlockedUsers, []*User]
-
-type allBlockedUsersHandler struct {
-	repo user.ReadRepository
+type AllUsers struct {
+	Status string
 }
 
-func NewAllBlockedUsersHandler(repo user.ReadRepository) *allBlockedUsersHandler {
+type AllUsersHandler = cqrs.Query[AllUsers, []*User]
+
+type allUsersHandler struct {
+	repo ReadRepository
+}
+
+func NewAllBlockedUsersHandler(repo ReadRepository) *allUsersHandler {
 	if repo == nil {
 		panic("repo is nil")
 	}
 
-	return &allBlockedUsersHandler{repo: repo}
+	return &allUsersHandler{repo: repo}
 }
 
-func (h allBlockedUsersHandler) Handle(ctx context.Context, q AllBlockedUsers) ([]*User, error) {
-	return nil, nil
+func (h allUsersHandler) Handle(ctx context.Context, q AllUsers) ([]*User, error) {
+	return h.repo.FindAll(ctx, q)
 }

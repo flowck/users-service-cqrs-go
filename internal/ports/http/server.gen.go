@@ -19,10 +19,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// Defines values for FindPetsByTagsParamsStatus.
+// Defines values for GetUsersByStatusParamsStatus.
 const (
-	Blocked   FindPetsByTagsParamsStatus = "blocked"
-	Unblocked FindPetsByTagsParamsStatus = "unblocked"
+	Blocked   GetUsersByStatusParamsStatus = "blocked"
+	Unblocked GetUsersByStatusParamsStatus = "unblocked"
 )
 
 // GenericResponse defines model for GenericResponse.
@@ -44,20 +44,20 @@ type User struct {
 // UserList defines model for UserList.
 type UserList = []User
 
-// FindPetsByTagsParams defines parameters for FindPetsByTags.
-type FindPetsByTagsParams struct {
+// GetUsersByStatusParams defines parameters for GetUsersByStatus.
+type GetUsersByStatusParams struct {
 	// Status User status "blocked" / "unblocked"
-	Status FindPetsByTagsParamsStatus `form:"status" json:"status"`
+	Status GetUsersByStatusParamsStatus `form:"status" json:"status"`
 }
 
-// FindPetsByTagsParamsStatus defines parameters for FindPetsByTags.
-type FindPetsByTagsParamsStatus string
+// GetUsersByStatusParamsStatus defines parameters for GetUsersByStatus.
+type GetUsersByStatusParamsStatus string
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Finds Pets by tags
+	// Finds users by status
 	// (GET /users)
-	FindPetsByTags(w http.ResponseWriter, r *http.Request, params FindPetsByTagsParams)
+	GetUsersByStatus(w http.ResponseWriter, r *http.Request, params GetUsersByStatusParams)
 	// Finds Pets by status
 	// (POST /users/{id}/block)
 	BlockUser(w http.ResponseWriter, r *http.Request, id openapi_types.UUID)
@@ -75,14 +75,14 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// FindPetsByTags operation middleware
-func (siw *ServerInterfaceWrapper) FindPetsByTags(w http.ResponseWriter, r *http.Request) {
+// GetUsersByStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetUsersByStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params FindPetsByTagsParams
+	var params GetUsersByStatusParams
 
 	// ------------- Required query parameter "status" -------------
 
@@ -100,7 +100,7 @@ func (siw *ServerInterfaceWrapper) FindPetsByTags(w http.ResponseWriter, r *http
 	}
 
 	var handler http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.FindPetsByTags(w, r, params)
+		siw.Handler.GetUsersByStatus(w, r, params)
 	})
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -276,7 +276,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/users", wrapper.FindPetsByTags)
+		r.Get(options.BaseURL+"/users", wrapper.GetUsersByStatus)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/users/{id}/block", wrapper.BlockUser)
@@ -291,22 +291,22 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

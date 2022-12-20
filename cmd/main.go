@@ -4,27 +4,39 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/kelseyhightower/envconfig"
 	"log"
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 	"users-service-cqrs/internal/adapters"
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/app/command"
 	"users-service-cqrs/internal/app/query"
+	"users-service-cqrs/internal/ports/http"
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 )
 
+type config struct {
+	Port    int    `envconfig:"PORT"`
+	PsqlUri string `envconfig:"GOOSE_DBSTRING"`
+}
+
 func main() {
+	cfg := getConfig()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	done := make(chan os.Signal)
+	signal.Notify(done, syscall.SIGTERM, syscall.SIGINT)
 
 	//
 	// DB
 	//
-	db, err := sql.Open("postgres", os.Getenv("GOOSE_DBSTRING"))
+	db, err := sql.Open("postgres", cfg.PsqlUri)
 	if err != nil {
 		log.Fatalf("could not open a connection to db: %v", err)
 	}
@@ -34,36 +46,32 @@ func main() {
 	//
 	// Data Repositories
 	//
-	inMemReadUserRepo := adapters.NewInMemoryReadUserRepository()
+	readUserRepo := adapters.NewPsqlReadUserRepo(db)
 	inMemWriteUserRepo := adapters.NewInMemoryWriteUserRepository()
 
 	//
 	// Assemble the application
 	//
-	application := app.App{
+	application := &app.App{
 		Commands: &app.Commands{
 			BlockUser:   command.NewBlockUserHandler(inMemWriteUserRepo),
 			UnBlockUser: command.NewUnblockUserHandler(inMemWriteUserRepo),
 		},
 		Queries: &app.Queries{
-			AllBlockedUser: query.NewAllBlockedUsersHandler(inMemReadUserRepo),
+			AllBlockedUser: query.NewAllBlockedUsersHandler(readUserRepo),
 		},
 	}
 
-	fmt.Println(application.Queries.AllBlockedUser.Handle(ctx, query.AllBlockedUsers{}))
+	httpServer := http.NewServer(ctx, cfg.Port, application)
+	httpServer.Start()
 
-	server := http.Server{
-		Addr:              fmt.Sprintf(":%s", os.Getenv("PORT")),
-		Handler:           nil,
-		ReadHeaderTimeout: time.Second * 2,
-		IdleTimeout:       time.Second * 2,
-		ReadTimeout:       time.Second * 2,
-		WriteTimeout:      time.Second * 2,
-	}
+	<-done
+	log.Println("Stopping the service gracefully")
 
-	if err = server.ListenAndServe(); err != nil {
-		panic(err)
-	}
+	ctx, cancel = context.WithTimeout(ctx, time.Second*15)
+	defer cancel()
+
+	httpServer.Stop(ctx)
 }
 
 func applyPsqlMigrationsAndSeeds(db *sql.DB, seedsEnabled bool) {
@@ -87,4 +95,14 @@ func applyPsqlMigrationsAndSeeds(db *sql.DB, seedsEnabled bool) {
 	if err = goose.Up(db, fmt.Sprintf("%s/sql/seeds", workdir)); err != nil {
 		panic(err)
 	}
+}
+
+func getConfig() *config {
+	cfg := &config{}
+
+	if err := envconfig.Process("", cfg); err != nil {
+		panic(err)
+	}
+
+	return cfg
 }

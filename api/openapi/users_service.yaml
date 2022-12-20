@@ -74,9 +74,9 @@ paths:
     get:
       tags:
         - users
-      summary: Finds Pets by tags
+      summary: Finds users by status
       description: Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
-      operationId: findPetsByTags
+      operationId: getUsersByStatus
       parameters:
         - name: status
           in: query
