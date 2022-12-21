@@ -25,11 +25,14 @@ jobs:
         timeout-minutes: 1
         run: ./scripts/wait-for.sh
 
-      - name: Unit Test
+      - name: Unit / Integration Tests
+        run: task test
+
+      - name: E2E Tests
         env:
           GOOSE_DRIVER: postgres
           GOOSE_DBSTRING: postgres://postgres:password@localhost:5432/users_service_cqrs_db?sslmode=disable
-        run: task test
+        run: task test:e2e
 
   golangci:
     name: lint

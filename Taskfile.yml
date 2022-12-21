@@ -37,9 +37,9 @@ tasks:
     cmds:
       - go test ./internal/...
 
-  test:models:
+  test:e2e:
     cmds:
-      - go test ./internal/adapters/models/...
+      - go test ./tests/...
 
   #
   # Build
