@@ -72,7 +72,7 @@ func TestGetUsersByStatus(t *testing.T) {
 
 		userList := unMarshalUserList(t, res)
 
-		for _, u := range userList {
+		for _, u := range *userList {
 			assert.Equalf(t, *u.Status, "blocked", "user's status expected to be equal: blocked")
 			assertUser(t, &u)
 		}
@@ -89,7 +89,7 @@ func TestGetUsersByStatus(t *testing.T) {
 		want := "blocked"
 		assert.Nil(t, err)
 
-		for _, u := range userList {
+		for _, u := range *userList {
 			assert.Equalf(t, *u.Status, want, "user's status expected to be equal: %s", want)
 			assertUser(t, &u)
 		}
@@ -98,7 +98,7 @@ func TestGetUsersByStatus(t *testing.T) {
 	})
 }
 
-func unMarshalUserList(t *testing.T, res *http.Response) client.UserList {
+func unMarshalUserList(t *testing.T, res *http.Response) *client.UserList {
 	content, err := io.ReadAll(res.Body)
 	assert.Nil(t, err)
 
@@ -106,7 +106,7 @@ func unMarshalUserList(t *testing.T, res *http.Response) client.UserList {
 	err = json.Unmarshal(content, &userList)
 	assert.Nil(t, err)
 
-	return userList
+	return &userList
 }
 
 func assertUser(t *testing.T, u *client.User) {
