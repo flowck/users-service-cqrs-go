@@ -19,7 +19,7 @@ jobs:
         run: task build
 
       - name: Boot service
-        run: task ci:boot
+        run: task boot:ci
 
       - name: Wait for service
         timeout-minutes: 1

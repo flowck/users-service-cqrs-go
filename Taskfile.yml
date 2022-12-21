@@ -18,9 +18,13 @@ tasks:
   #
   # Lint
   #
-  lint:
+  lint:docker:
     cmds:
       - docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.50.1 golangci-lint run -v
+
+  lint:
+    cmds:
+      - golangci-lint run
 
   lint:fix:
     cmds:
@@ -133,10 +137,10 @@ tasks:
       - task mig:up
       - task seeds:up
 
-  ci:boot:
-    cmds:
-      - docker-compose --profile app up -d
-
   boot:
     cmds:
       - docker-compose --profile app up -d --build
+
+  boot:ci:
+    cmds:
+      - docker-compose --profile app up -d
