@@ -136,3 +136,7 @@ tasks:
   ci:boot:
     cmds:
       - docker-compose --profile app up -d
+
+  boot:
+    cmds:
+      - docker-compose --profile app up -d --build

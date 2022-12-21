@@ -81,6 +81,7 @@ func (h *Handlers) UnblockUser(w http.ResponseWriter, r *http.Request, id openap
 func (h *Handlers) GetUsersByStatus(w http.ResponseWriter, r *http.Request, params GetUsersByStatusParams) {
 	users, err := h.application.Queries.AllUsers.Handle(r.Context(), query.AllUsers{Status: string(params.Status)})
 	if err != nil {
+		reply(w, r, NewErrorResponse(err, "an unexpected error occurred", http.StatusInternalServerError))
 		return
 	}
 

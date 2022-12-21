@@ -66,6 +66,7 @@ func main() {
 
 	httpServer := http.NewServer(ctx, cfg.Port, application)
 	httpServer.Start()
+	log.Printf("The http server is running at http://localhost:%d\n", cfg.Port)
 
 	<-done
 	log.Println("Stopping the service gracefully")

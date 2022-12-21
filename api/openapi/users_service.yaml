@@ -15,6 +15,7 @@ externalDocs:
   url: https://github.com/flowck/users-service-cqrs-go
 servers:
   - url: http://localhost:3000
+  - url: http://localhost:3001
 paths:
   /users/{id}/unblock:
     post:

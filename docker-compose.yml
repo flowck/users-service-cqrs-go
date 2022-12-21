@@ -35,7 +35,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      PORT: 3001
+      PORT: 3000
       GOOSE_DRIVER: postgres
       GOOSE_DBSTRING: postgres://postgres:password@postgres:5432/users_service_cqrs_db?sslmode=disable
     ports:
