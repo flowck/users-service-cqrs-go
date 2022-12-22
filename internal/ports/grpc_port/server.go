@@ -2,10 +2,11 @@ package grpc_port
 
 import (
 	"fmt"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"users-service-cqrs/internal/app"
+
+	"google.golang.org/grpc"
 )
 
 type GrpcServer struct {
