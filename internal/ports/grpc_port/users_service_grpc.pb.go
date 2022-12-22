@@ -4,7 +4,7 @@
 // - protoc             v3.21.8
 // source: users_service.proto
 
-package api
+package grpc_port
 
 import (
 	context "context"
@@ -22,9 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UsersServiceClient interface {
-	BlockUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	UnblockUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
-	ShowBlockedUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
+	BlockUser(ctx context.Context, in *BlockUserRequest, opts ...grpc.CallOption) (*Empty, error)
+	UnblockUser(ctx context.Context, in *UnBlockUserRequest, opts ...grpc.CallOption) (*Empty, error)
+	GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error)
+	GetOneUser(ctx context.Context, in *GetOneUserRequest, opts ...grpc.CallOption) (*User, error)
 }
 
 type usersServiceClient struct {
@@ -35,27 +36,36 @@ func NewUsersServiceClient(cc grpc.ClientConnInterface) UsersServiceClient {
 	return &usersServiceClient{cc}
 }
 
-func (c *usersServiceClient) BlockUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+func (c *usersServiceClient) BlockUser(ctx context.Context, in *BlockUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/api.UsersService/BlockUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpc_port.UsersService/BlockUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *usersServiceClient) UnblockUser(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+func (c *usersServiceClient) UnblockUser(ctx context.Context, in *UnBlockUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/api.UsersService/UnblockUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/grpc_port.UsersService/UnblockUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *usersServiceClient) ShowBlockedUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/api.UsersService/ShowBlockedUsers", in, out, opts...)
+func (c *usersServiceClient) GetAllUsers(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error) {
+	out := new(GetAllUsersResponse)
+	err := c.cc.Invoke(ctx, "/grpc_port.UsersService/GetAllUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) GetOneUser(ctx context.Context, in *GetOneUserRequest, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/grpc_port.UsersService/GetOneUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +76,10 @@ func (c *usersServiceClient) ShowBlockedUsers(ctx context.Context, in *Empty, op
 // All implementations must embed UnimplementedUsersServiceServer
 // for forward compatibility
 type UsersServiceServer interface {
-	BlockUser(context.Context, *Empty) (*Empty, error)
-	UnblockUser(context.Context, *Empty) (*Empty, error)
-	ShowBlockedUsers(context.Context, *Empty) (*Empty, error)
+	BlockUser(context.Context, *BlockUserRequest) (*Empty, error)
+	UnblockUser(context.Context, *UnBlockUserRequest) (*Empty, error)
+	GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error)
+	GetOneUser(context.Context, *GetOneUserRequest) (*User, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -76,14 +87,17 @@ type UsersServiceServer interface {
 type UnimplementedUsersServiceServer struct {
 }
 
-func (UnimplementedUsersServiceServer) BlockUser(context.Context, *Empty) (*Empty, error) {
+func (UnimplementedUsersServiceServer) BlockUser(context.Context, *BlockUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
 }
-func (UnimplementedUsersServiceServer) UnblockUser(context.Context, *Empty) (*Empty, error) {
+func (UnimplementedUsersServiceServer) UnblockUser(context.Context, *UnBlockUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnblockUser not implemented")
 }
-func (UnimplementedUsersServiceServer) ShowBlockedUsers(context.Context, *Empty) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ShowBlockedUsers not implemented")
+func (UnimplementedUsersServiceServer) GetAllUsers(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllUsers not implemented")
+}
+func (UnimplementedUsersServiceServer) GetOneUser(context.Context, *GetOneUserRequest) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOneUser not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 
@@ -99,7 +113,7 @@ func RegisterUsersServiceServer(s grpc.ServiceRegistrar, srv UsersServiceServer)
 }
 
 func _UsersService_BlockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(BlockUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -108,16 +122,16 @@ func _UsersService_BlockUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.UsersService/BlockUser",
+		FullMethod: "/grpc_port.UsersService/BlockUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).BlockUser(ctx, req.(*Empty))
+		return srv.(UsersServiceServer).BlockUser(ctx, req.(*BlockUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UsersService_UnblockUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(UnBlockUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -126,28 +140,46 @@ func _UsersService_UnblockUser_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.UsersService/UnblockUser",
+		FullMethod: "/grpc_port.UsersService/UnblockUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).UnblockUser(ctx, req.(*Empty))
+		return srv.(UsersServiceServer).UnblockUser(ctx, req.(*UnBlockUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_ShowBlockedUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+func _UsersService_GetAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllUsersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).ShowBlockedUsers(ctx, in)
+		return srv.(UsersServiceServer).GetAllUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.UsersService/ShowBlockedUsers",
+		FullMethod: "/grpc_port.UsersService/GetAllUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).ShowBlockedUsers(ctx, req.(*Empty))
+		return srv.(UsersServiceServer).GetAllUsers(ctx, req.(*GetAllUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_GetOneUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOneUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetOneUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc_port.UsersService/GetOneUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetOneUser(ctx, req.(*GetOneUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -156,7 +188,7 @@ func _UsersService_ShowBlockedUsers_Handler(srv interface{}, ctx context.Context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UsersService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "api.UsersService",
+	ServiceName: "grpc_port.UsersService",
 	HandlerType: (*UsersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -168,8 +200,12 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersService_UnblockUser_Handler,
 		},
 		{
-			MethodName: "ShowBlockedUsers",
-			Handler:    _UsersService_ShowBlockedUsers_Handler,
+			MethodName: "GetAllUsers",
+			Handler:    _UsersService_GetAllUsers_Handler,
+		},
+		{
+			MethodName: "GetOneUser",
+			Handler:    _UsersService_GetOneUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

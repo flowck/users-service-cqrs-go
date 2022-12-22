@@ -1,12 +1,46 @@
 syntax = "proto3";
 
-option go_package = "users-service-cqrs/api";
-package api;
+option go_package = "users-service-cqrs/internal/ports/grpc_port";
+package grpc_port;
 
 service UsersService {
-  rpc BlockUser(Empty) returns (Empty);
-  rpc UnblockUser(Empty) returns (Empty);
-  rpc ShowBlockedUsers(Empty) returns (Empty);
+  rpc BlockUser(BlockUserRequest) returns (Empty);
+  rpc UnblockUser(UnBlockUserRequest) returns (Empty);
+  rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+  rpc GetOneUser(GetOneUserRequest) returns (User);
 }
 
 message Empty {}
+
+enum UserStatus {
+  blocked = 0;
+  unblocked = 1;
+}
+
+message GetAllUsersRequest {
+  UserStatus status = 1;
+}
+
+message GetAllUsersResponse {
+  repeated User users = 1;
+}
+
+message User {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  UserStatus status = 5;
+}
+
+message BlockUserRequest {
+  string id = 1;
+}
+
+message UnBlockUserRequest {
+  string id = 1;
+}
+
+message GetOneUserRequest {
+  string id = 1;
+}

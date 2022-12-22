@@ -13,6 +13,7 @@ import (
 	"users-service-cqrs/internal/app"
 	"users-service-cqrs/internal/app/command"
 	"users-service-cqrs/internal/app/query"
+	"users-service-cqrs/internal/ports/grpc_port"
 	"users-service-cqrs/internal/ports/http"
 
 	"github.com/kelseyhightower/envconfig"
@@ -22,8 +23,9 @@ import (
 )
 
 type config struct {
-	Port    int    `envconfig:"PORT"`
-	PsqlUri string `envconfig:"GOOSE_DBSTRING"`
+	Port     int    `envconfig:"PORT"`
+	GrpcPort int    `envconfig:"GRPC_PORT"`
+	PsqlUri  string `envconfig:"GOOSE_DBSTRING"`
 }
 
 func main() {
@@ -64,9 +66,18 @@ func main() {
 		},
 	}
 
+	//
+	// Http server
+	//
 	httpServer := http.NewServer(ctx, cfg.Port, application)
 	httpServer.Start()
 	log.Printf("The http server is running at http://localhost:%d\n", cfg.Port)
+
+	//
+	// Grpc server
+	//
+	grpcServer := grpc_port.NewServer()
+	grpcServer.Start(cfg.GrpcPort, application)
 
 	<-done
 	log.Println("Stopping the service gracefully")
@@ -75,6 +86,7 @@ func main() {
 	defer cancel()
 
 	httpServer.Stop(ctx)
+	grpcServer.Stop()
 }
 
 func applyPsqlMigrationsAndSeeds(db *sql.DB, seedsEnabled bool) {

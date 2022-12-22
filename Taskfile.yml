@@ -66,8 +66,8 @@ tasks:
     cmds:
       - |
         protoc --proto_path=./api/proto \
-          --go_opt=paths=source_relative --go_out=./internal/ports/grpc \
-          --go-grpc_opt=paths=source_relative --go-grpc_out=./internal/ports/grpc \
+          --go_opt=paths=source_relative --go_out=./internal/ports/grpc_port \
+          --go-grpc_opt=paths=source_relative --go-grpc_out=./internal/ports/grpc_port \
           ./api/proto/*.proto
 
   #
