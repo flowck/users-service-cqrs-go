@@ -1,4 +1,4 @@
-package component
+package http_port_test
 
 import (
 	"context"
