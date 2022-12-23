@@ -2,11 +2,12 @@ package grpc_port_test
 
 import (
 	"context"
+	"testing"
+	pb "users-service-cqrs/internal/ports/grpc_port"
+
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"testing"
-	pb "users-service-cqrs/internal/ports/grpc_port"
 )
 
 func TestGetOneUser(t *testing.T) {

@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+
 	"github.com/google/uuid"
 )
 
@@ -24,10 +25,6 @@ func NewIDFromString(value string) (*ID, error) {
 	}
 
 	return &ID{value: id}, nil
-}
-
-func (i *ID) isZero() bool {
-	return i.value.ID() == 0
 }
 
 func (i *ID) String() string {
