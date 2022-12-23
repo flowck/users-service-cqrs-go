@@ -41,4 +41,4 @@ services:
       GOOSE_DBSTRING: postgres://postgres:password@postgres:5432/users_service_cqrs_db?sslmode=disable
     ports:
       - "127.0.0.1:3001:3000"
-      - "127.0.0.1:3002:3200"
+      - "127.0.0.1:3002:3002"

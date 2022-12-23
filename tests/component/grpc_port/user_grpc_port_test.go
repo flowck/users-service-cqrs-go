@@ -19,6 +19,7 @@ func TestGetOneUser(t *testing.T) {
 	t.Run("Expect user to be returned", func(t *testing.T) {
 		id := "246cf82b-f50e-4ee6-b948-ccfe938b7d2f"
 		u, err := service.GetOneUser(ctx, &pb.GetOneUserRequest{Id: id})
+		t.Log(err)
 		assert.Nil(t, err)
 		assertUser(t, u)
 		assert.Equal(t, u.Id, id)
@@ -32,7 +33,7 @@ func TestGetOneUser(t *testing.T) {
 }
 
 func createService() (pb.UsersServiceClient, *grpc.ClientConn) {
-	conn, err := grpc.Dial("localhost:3200", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("localhost:3002", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
