@@ -32,7 +32,7 @@ func (h Handlers) GetOneUser(ctx context.Context, request *GetOneUserRequest) (*
 		return nil, err
 	}
 
-	u, err := h.application.Queries.OneUser.Handle(ctx, &id)
+	u, err := h.application.Queries.OneUser.Handle(ctx, id)
 	if err != nil {
 		return nil, err
 	}

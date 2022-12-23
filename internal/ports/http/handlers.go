@@ -29,7 +29,7 @@ func (h *Handlers) GetOneUser(w http.ResponseWriter, r *http.Request, id openapi
 		return
 	}
 
-	u, err := h.application.Queries.OneUser.Handle(r.Context(), &userId)
+	u, err := h.application.Queries.OneUser.Handle(r.Context(), userId)
 
 	if errors.Is(err, user.ErrUserNotFound) {
 		reply(w, r, NewErrorResponse(err, err.Error(), http.StatusNotFound))
@@ -51,7 +51,7 @@ func (h *Handlers) BlockUser(w http.ResponseWriter, r *http.Request, id openapi_
 		return
 	}
 
-	err = h.application.Commands.BlockUser.Handle(r.Context(), command.BlockUser{UserId: &userId})
+	err = h.application.Commands.BlockUser.Handle(r.Context(), command.BlockUser{UserId: userId})
 
 	if errors.Is(err, user.ErrUserNotFound) {
 		reply(w, r, NewErrorResponse(err, err.Error(), http.StatusNotFound))
@@ -68,7 +68,7 @@ func (h *Handlers) UnblockUser(w http.ResponseWriter, r *http.Request, id openap
 		return
 	}
 
-	err = h.application.Commands.UnBlockUser.Handle(r.Context(), command.UnBlockUser{UserId: &userId})
+	err = h.application.Commands.UnBlockUser.Handle(r.Context(), command.UnBlockUser{UserId: userId})
 
 	if errors.Is(err, user.ErrUserNotFound) {
 		reply(w, r, NewErrorResponse(err, err.Error(), http.StatusNotFound))

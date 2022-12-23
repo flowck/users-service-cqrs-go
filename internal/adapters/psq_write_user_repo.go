@@ -60,17 +60,7 @@ func NewPsqlWriteUserRepo(db *sql.DB) *psqlWriteUserRepo {
 }
 
 func mapToDomainUser(row *models.User) (*user.User, error) {
-	id, err := user.NewIDFromString(row.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	email, err := user.NewEmail(row.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	u, err := user.New(id, row.FirstName.String, row.LastName.String, email)
+	u, err := user.New(row.ID, row.FirstName.String, row.LastName.String, row.Email)
 	if err != nil {
 		return nil, err
 	}

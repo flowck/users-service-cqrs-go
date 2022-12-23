@@ -2,18 +2,22 @@ package user
 
 import (
 	"errors"
-	"fmt"
 )
 
 type User struct {
-	id        ID
+	id        *ID
 	firstName string
 	lastName  string
-	email     Email
+	email     *Email
 	isBlocked bool
 }
 
-func New(id ID, firstName, lastName string, email Email) (*User, error) {
+func New(id, firstName, lastName, email string) (*User, error) {
+	newId, err := NewIDFromString(id)
+	if err != nil {
+		return nil, err
+	}
+
 	if firstName == "" {
 		return nil, errors.New("firstName cannot be empty")
 	}
@@ -22,19 +26,16 @@ func New(id ID, firstName, lastName string, email Email) (*User, error) {
 		return nil, errors.New("lastName cannot be empty")
 	}
 
-	if email.String() == "" {
-		return nil, errors.New("email cannot be empty")
-	}
-
-	if id.isZero() {
-		return nil, errors.New("id cannot be empty")
+	var newEmail *Email
+	if newEmail, err = NewEmail(email); err != nil {
+		return nil, err
 	}
 
 	return &User{
-		id:        id,
+		id:        newId,
 		firstName: firstName,
 		lastName:  lastName,
-		email:     email,
+		email:     newEmail,
 		isBlocked: false,
 	}, nil
 }
@@ -52,15 +53,14 @@ func (u *User) LastName() string {
 }
 
 func (u *User) Email() *Email {
-	return &u.email
+	return u.email
 }
 
-func (u *User) ID() ID {
+func (u *User) ID() *ID {
 	return u.id
 }
 
 func (u *User) Block() {
-	fmt.Println(u)
 	u.isBlocked = true
 }
 

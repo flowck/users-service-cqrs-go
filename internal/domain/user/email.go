@@ -11,18 +11,18 @@ func (e *Email) String() string {
 	return e.value
 }
 
-func NewEmail(value string) (Email, error) {
+func NewEmail(value string) (*Email, error) {
 	regex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 	if value == "" {
-		return Email{}, ErrEmailEmpty
+		return nil, ErrEmailEmpty
 	}
 
 	if !regex.MatchString(value) {
-		return Email{}, ErrEmailInvalid
+		return nil, ErrEmailInvalid
 	}
 
-	return Email{value: value}, nil
+	return &Email{value: value}, nil
 }
 
 // Errors
