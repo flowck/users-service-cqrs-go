@@ -13,7 +13,6 @@ func TestNewID(t *testing.T) {
 }
 
 func TestNewIDFromString(t *testing.T) {
-
 	t.Run("Expect to return an error if provided string is not valid for an id", func(t *testing.T) {
 		id, err := user.NewIDFromString("")
 		assert.Nil(t, id)
