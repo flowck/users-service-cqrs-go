@@ -13,7 +13,7 @@ type Server interface {
 func ContentTypeMiddleware(value string) func(handler netHttp.Handler) netHttp.Handler {
 	return func(handler netHttp.Handler) netHttp.Handler {
 		return netHttp.HandlerFunc(func(w netHttp.ResponseWriter, r *netHttp.Request) {
-			w.Header().Set("Content-Type", "application/json")
+			w.Header().Set("Content-Type", value)
 			handler.ServeHTTP(w, r)
 		})
 	}
