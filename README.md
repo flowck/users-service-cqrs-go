@@ -4,8 +4,8 @@
 
 ## Goals
 
-- [ ] Implement the [application](./internal/app/app.go) layer
-- [ ] Implement [commands](./internal/app/command) and [queries](./internal/app/query) in different packages
+- [x] Implement the [application](./internal/app/app.go) layer
+- [x] Implement [commands](./internal/app/command) and [queries](./internal/app/query) in different packages
 
 ## Functional requirements
 
