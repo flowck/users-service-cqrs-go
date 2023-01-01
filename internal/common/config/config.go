@@ -20,7 +20,7 @@ func New() *Config {
 
 	if os.Getenv("ENVIRONMENT") != "production" {
 		if err := godotenv.Load(); err != nil {
-			panic(err)
+			log.Println("Unable to find a .env file")
 		}
 		log.Println("Config has been loaded from from .env because env is not set to production")
 	}

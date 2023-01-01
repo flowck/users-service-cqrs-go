@@ -38,7 +38,7 @@ PS: It's still experimental, there for it might result in an error due to a race
 
 ### Miscellaneous
 
-- System's entry point `./cmd/main.go`
+- System's entry point `./cmd`
 - System's code `./internal`
 - Inspect the file [Taskfile.yml](./Taskfile.yml) to learn about the scripts used to support the development of this project
 - Run Swagger Editor `docker-compose --profile swagger_editor up -d`
