@@ -39,6 +39,7 @@ services:
       - GRPC_PORT=3002
       - GOOSE_DRIVER=postgres
       - GOOSE_DBSTRING=postgres://postgres:password@postgres:5432/users_service_cqrs_db?sslmode=disable
+      - APPLY_PSQL_SEEDS=enabled
     ports:
       - "127.0.0.1:3001:3000"
       - "127.0.0.1:3002:3002"

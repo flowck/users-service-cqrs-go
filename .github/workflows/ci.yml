@@ -9,6 +9,7 @@ jobs:
     env:
       GOOSE_DRIVER: postgres
       GOOSE_DBSTRING: postgres://postgres:password@localhost:5432/users_service_cqrs_db?sslmode=disable
+      APPLY_PSQL_SEEDS: enabled
     steps:
       - uses: actions/checkout@v2
       - uses: arduino/setup-task@v1

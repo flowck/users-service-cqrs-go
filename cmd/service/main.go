@@ -25,7 +25,7 @@ func main() {
 	signal.Notify(done, syscall.SIGTERM, syscall.SIGINT)
 
 	db := psql.Connect(cfg.PsqlUri)
-	psql.ApplyPsqlMigrationsAndSeeds(db, cfg.ApplyPsqlMigrations)
+	psql.ApplyPsqlMigrationsAndSeeds(db, cfg.IsSeedsEnabled())
 
 	application := app.New(db)
 

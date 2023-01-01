@@ -9,10 +9,14 @@ import (
 )
 
 type Config struct {
-	Port                int    `envconfig:"PORT"`
-	GrpcPort            int    `envconfig:"GRPC_PORT"`
-	PsqlUri             string `envconfig:"GOOSE_DBSTRING"`
-	ApplyPsqlMigrations bool   `envconfig:"APPLY_PSQL_MIGRATIONS"`
+	Port           int    `envconfig:"PORT"`
+	GrpcPort       int    `envconfig:"GRPC_PORT"`
+	PsqlUri        string `envconfig:"GOOSE_DBSTRING"`
+	ApplyPsqlSeeds string `envconfig:"APPLY_PSQL_SEEDS"`
+}
+
+func (c *Config) IsSeedsEnabled() bool {
+	return c.ApplyPsqlSeeds == "enabled"
 }
 
 func New() *Config {
