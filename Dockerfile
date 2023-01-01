@@ -2,7 +2,7 @@ FROM golang as builder
 WORKDIR /usr/app
 COPY . ./
 ENV CGO_ENABLED=0
-RUN go build -o bin/users_service_cqrs ./cmd
+RUN go build -o bin/users_service_cqrs ./cmd/service
 
 FROM alpine
 WORKDIR /usr/app

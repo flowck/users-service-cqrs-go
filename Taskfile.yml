@@ -7,13 +7,13 @@ tasks:
   #
   # Run
   #
-  run:
+  run:service:
     cmds:
-      - go run ./cmd
+      - reflex -r '\.go' -s -- sh -c 'go run ./cmd/service'
 
-  run:dev:
+  run:cli:
     cmds:
-      - reflex -r '\.go' -s -- sh -c 'go run ./cmd'
+      - reflex -r '\.go' -s -- sh -c 'go run ./cmd/cli'
 
   #
   # Lint
@@ -37,7 +37,13 @@ tasks:
     cmds:
       - go test ./internal/...
 
+  # Require
   test:e2e:
+    cmds:
+      - task boot:ci
+      - go test ./tests/...
+
+  test:e2e:ci:
     cmds:
       - go test ./tests/...
 
@@ -46,7 +52,7 @@ tasks:
   #
   build:
     cmds:
-      - go build -o bin/users_service_crqs ./cmd
+      - go build -o bin/users_service_crqs ./cmd/service
 
   #
   # Docker
